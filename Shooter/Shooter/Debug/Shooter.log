@@ -1,0 +1,16 @@
+﻿  main.cpp
+d:\05development\sfml repo\sfml\shooter\shooter\main.cpp(20): error C2065: 'Bullet': undeclared identifier
+d:\05development\sfml repo\sfml\shooter\shooter\main.cpp(20): error C2923: 'std::vector': 'Bullet' is not a valid template type argument for parameter '_Ty'
+d:\05development\sfml repo\sfml\shooter\shooter\main.cpp(20): error C3203: 'allocator': unspecialized class template can't be used as a template argument for template parameter '_Alloc', expected a real type
+d:\05development\sfml repo\sfml\shooter\shooter\main.cpp(22): error C2512: 'std::vector': no appropriate default constructor available
+  d:\visual studio\vc\tools\msvc\14.12.25827\include\vector(658): note: see declaration of 'std::vector'
+d:\05development\sfml repo\sfml\shooter\shooter\main.cpp(57): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+d:\05development\sfml repo\sfml\shooter\shooter\main.cpp(90): error C2663: 'std::vector<_Ty,_Alloc>::push_back': 2 overloads have no legal conversion for 'this' pointer
+d:\05development\sfml repo\sfml\shooter\shooter\main.cpp(97): error C2662: '_Vector_alloc<_Alloc_types>::_Val_types::size_type std::vector<_Ty,_Alloc>::size(void) noexcept const': cannot convert 'this' pointer from 'std::vector' to 'const std::vector<_Ty,_Alloc> &'
+  d:\05development\sfml repo\sfml\shooter\shooter\main.cpp(97): note: Reason: cannot convert from 'std::vector' to 'const std::vector<_Ty,_Alloc>'
+  d:\05development\sfml repo\sfml\shooter\shooter\main.cpp(97): note: Conversion requires a second user-defined-conversion operator or constructor
+d:\05development\sfml repo\sfml\shooter\shooter\main.cpp(99): error C2678: binary '[': no operator found which takes a left-hand operand of type 'std::vector' (or there is no acceptable conversion)
+  d:\visual studio\vc\tools\msvc\14.12.25827\include\vector(1804): note: could be 'const _Ty &std::vector<_Ty,_Alloc>::operator [](const _Vector_alloc<_Alloc_types>::_Val_types::size_type) const'
+  d:\visual studio\vc\tools\msvc\14.12.25827\include\vector(1790): note: or       '_Ty &std::vector<_Ty,_Alloc>::operator [](const _Vector_alloc<_Alloc_types>::_Val_types::size_type)'
+  d:\05development\sfml repo\sfml\shooter\shooter\main.cpp(99): note: while trying to match the argument list '(std::vector, ::size_t)'
+d:\05development\sfml repo\sfml\shooter\shooter\main.cpp(99): error C2228: left of '.shape' must have class/struct/union
