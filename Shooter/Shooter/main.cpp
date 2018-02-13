@@ -16,7 +16,7 @@ public:
 	{
 		this->shape.setTexture(*texture);
 
-		this->shape.setScale(0.3f, 0.3f);
+		this->shape.setScale(0.07f, 0.07f);
 	}
 
 	~Bullet() {}
@@ -43,6 +43,7 @@ public:
 
 		this->shape.setScale(0.1f, 0.1f);
 	}
+
 	~Player() {}
 };
 
@@ -74,7 +75,7 @@ int main()
 	enemyTex.loadFromFile("Textures/enemy.png");
 
 	Texture bulletTex;
-	enemyTex.loadFromFile("Textures/missileTex01.png");
+	bulletTex.loadFromFile("Textures/missileTex01.png");
 
 	// Player init
 	Player player(&playerTex);
@@ -87,17 +88,46 @@ int main()
 			if (event.type == Event::Closed)
 				window.close();
 		}
-		// Upadte Shooting
+
+		// Upadte 
+		
+		// Update player
+		if (Keyboard::isKeyPressed(Keyboard::W))
+			player.shape.move(0.f, -10.f);
+
+		if (Keyboard::isKeyPressed(Keyboard::S))
+			player.shape.move(0.f, 10.f);
+
+		if (Keyboard::isKeyPressed(Keyboard::A))
+			player.shape.move(-10.f, 0.f);
+
+		if (Keyboard::isKeyPressed(Keyboard::D))
+			player.shape.move(10.f, 0.f);
+
+
+		// Update controls
 		if (Mouse::isButtonPressed(Mouse::Left))
 		{
 			player.bullets.push_back(Bullet(&bulletTex));
 		}
 		
+		// Bullets
+		// Out of window bounds
+		for (size_t i = 0; i < player.bullets.size(); i++)
+		{
+ 			if (player.bullets[i].shape.getPosition().x >= window.getSize().x)
+				player.bullets.erase(player.bullets.begin());
+		}
+
+		// Enemy collison
+
+		// Update enemy
+
 		// Draw
 		window.clear();
 		
-		
-		window.draw(player.shape);
+	    window.draw(player.shape);
+
 		for (size_t i = 0; i < player.bullets.size(); i++)
 		{
 			window.draw(player.bullets[i].shape);
