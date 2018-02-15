@@ -1,67 +1,9 @@
-#include <iostream>
-#include "SFML\Graphics.hpp"
-#include "SFML\Window.hpp"
-#include "SFML\System.hpp"
-#include <math.h>
-#include <cstdlib>
-#include <vector>
-
-using namespace sf;
-
-class Bullet
-{
-public:
-	Sprite shape;
-	Bullet(Texture *texture, Vector2f pos)
-	{
-		this->shape.setTexture(*texture);
-
-		this->shape.setScale(0.07f, 0.07f);
-		this->shape.setPosition(pos);
-	}
-
-	~Bullet() {}
-};
-
-class Player
-{
-public:
-	Sprite shape;
-	Texture* texture;
-
-	int HP;
-	int HPMax;
-	
-	std::vector<Bullet> bullets;
-
-	Player(Texture *texture)
-	{
-		this->HPMax = 10;
-		this->HP = this->HPMax;
-		
-		this->texture = texture;
-		this->shape.setTexture(*texture);
-
-		this->shape.setScale(0.1f, 0.1f);
-	}
-
-	~Player() {}
-};
-
-
-class Enemy
-{
-public:
-
-};
-
-
+#include "Bullet.h"
+#include "Player.h"
+#include "Enemy.h"
 
 int main()
 {
-	Vector2f offset(10.f, 0.f); // Offset of bullet position
-	
-	
 	srand(time(NULL));
 	RenderWindow window(VideoMode(800, 600), "Space Shooter", Style::Default);
 
@@ -130,6 +72,7 @@ int main()
 
 		if (Keyboard::isKeyPressed(Keyboard::K) && shootTimer >= 20)
 		{
+			Vector2f offset(10.f, 20.f);
 			player.bullets.push_back(Bullet(&bulletTex, player.shape.getPosition() + offset));
 			shootTimer = 0; // Reset timer
 		}
