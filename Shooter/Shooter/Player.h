@@ -9,10 +9,11 @@ public:
 
 	int HP;
 	int HPMax;
+	int shootTimer;
 
 	std::vector<Bullet> bullets;
 
-	Player(Texture *texture);
+	Player(Texture *texture, int _shooterTime);
 	
 	~Player();
 };

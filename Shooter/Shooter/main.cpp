@@ -4,10 +4,18 @@
 
 int main()
 {
+	// Generate random seed
 	srand(time(NULL));
+	
 	RenderWindow window(VideoMode(800, 600), "Space Shooter", Style::Default);
 
 	window.setFramerateLimit(60);
+
+	// Init globals
+	const int SPAWNLAPSE = 90;
+	const int SHOOTLAPSE = 20;
+	const float ENEMY_SPEED = 4.5f;
+	const int COLLIDE_DAMAGE = 2;
 
 	// Init text
 	Font font;
@@ -24,9 +32,12 @@ int main()
 	bulletTex.loadFromFile("Textures/missileTex01.png");
 
 	// Player init
-	Player player(&playerTex);
-	int shootTimer = 20;
+	Player player(&playerTex, SHOOTLAPSE);
 
+	// Enemy init
+	int enemySpawnTimer = 0;
+	std::vector<Enemy> enemies;
+	enemies.push_back(Enemy(&enemyTex, window.getSize()));
 
 	while (window.isOpen())
 	{
@@ -36,7 +47,8 @@ int main()
 			if (event.type == Event::Closed)
 				window.close();
 		}
-
+		// Print Hp on the console(used for debugging)
+		std::cout << player.HP << std::endl;
 		// Upadte 
 		
 		// Update player
@@ -67,20 +79,18 @@ int main()
 
 
 		// Update controls
-		if (shootTimer < 20)
-			shootTimer++;
-
-		if (Keyboard::isKeyPressed(Keyboard::K) && shootTimer >= 20)
+		if (player.shootTimer < SHOOTLAPSE)
+		{
+			player.shootTimer++;
+		}
+		if (Keyboard::isKeyPressed(Keyboard::K) && player.shootTimer >= SHOOTLAPSE)
 		{
 			Vector2f offset(10.f, 20.f);
 			player.bullets.push_back(Bullet(&bulletTex, player.shape.getPosition() + offset));
-			shootTimer = 0; // Reset timer
+			player.shootTimer = 0; // Reset timer
 		}
 		
 		// Bullets
-		
-
-		
 		for (size_t i = 0; i < player.bullets.size(); i++)
 		{
  			// Move 
@@ -88,22 +98,70 @@ int main()
 
 			// Out of window bounds
 			if (player.bullets[i].shape.getPosition().x >= window.getSize().x)
-				player.bullets.erase(player.bullets.begin());
+			{
+				player.bullets.erase(player.bullets.begin() + i);
+				break;
+			}
+			// Enemy collison
+			for (size_t k = 0; k < enemies.size(); k++)
+			{
+				if (player.bullets[i].shape.getGlobalBounds().intersects(enemies[k].shape.getGlobalBounds()))
+				{
+					enemies.erase(enemies.begin() + k);
+					player.bullets.erase(player.bullets.begin() + i);
+					break;
+				}
+			}
 		}
 
-		// Enemy collison
 
-		// Update enemy
+		// Update enemies
+		if (enemySpawnTimer < SPAWNLAPSE)
+		{
+			enemySpawnTimer++;
+		}
+
+		// Spawn timer
+		if (enemySpawnTimer >= SPAWNLAPSE)
+		{
+			enemies.push_back(Enemy(&enemyTex, window.getSize()));
+			enemySpawnTimer = 0;
+		}
+
+		for (size_t i = 0; i < enemies.size(); i++)
+		{
+			enemies[i].shape.move(-ENEMY_SPEED, 0);
+			
+			if (enemies[i].shape.getPosition().x <= 0 - enemies[i].shape.getGlobalBounds().width)
+			{
+				enemies.erase(enemies.begin() + i);
+			}
+
+			if (enemies[i].shape.getGlobalBounds().intersects(player.shape.getGlobalBounds()))
+			{
+				enemies.erase(enemies.begin() + i);
+				// Player take damage
+				player.HP -= COLLIDE_DAMAGE;
+			}
+		}
 
 		// Draw
 		window.clear();
 		
+		// Bullets
 		for (size_t i = 0; i < player.bullets.size(); i++)
 		{
 			window.draw(player.bullets[i].shape);
 		}
 
+		// Player
 		window.draw(player.shape);
+
+		// Render enemies
+		for (size_t i = 0; i < enemies.size(); i++)
+		{
+			window.draw(enemies[i].shape);
+		}
 
 		window.display();
 	}
