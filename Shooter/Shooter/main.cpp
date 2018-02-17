@@ -18,7 +18,7 @@ int main()
 	const int COLLIDE_DAMAGE = 1;
 	float PlayerSpeed = 10.f;
 	int playerScore = 0;
-	bool generateEnemy = true;
+	bool gameIsOver = false;
 
 	// Init font
 	Font font;
@@ -206,16 +206,19 @@ int main()
 		window.clear();
 		
 		// Bullets
-		for (size_t i = 0; i < player.bullets.size(); i++)
+		if (!gameIsOver)
 		{
-			window.draw(player.bullets[i].shape);
+			for (size_t i = 0; i < player.bullets.size(); i++)
+			{
+				window.draw(player.bullets[i].shape);
+			}
 		}
 
 		// Player
 		window.draw(player.shape);
 
 		// Render enemies
-		if (generateEnemy)
+		if (!gameIsOver)
 		{
 			for (size_t i = 0; i < enemies.size(); i++)
 			{
@@ -234,7 +237,7 @@ int main()
 			window.draw(gameOverText);
 			ENEMY_SPEED = 0;
 			PlayerSpeed = 0;
-			generateEnemy = false;
+			gameIsOver = true;
 		}
 
 
