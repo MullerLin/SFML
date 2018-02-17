@@ -3,7 +3,7 @@
 Enemy::Enemy(Texture *texture, Vector2u windowSize)
 {
 	
-	this->HPMax = rand() % 3 + 1;
+	this->HPMax = 1;
 	this->HP = HPMax;
 
 	this->shape.setTexture(*texture);

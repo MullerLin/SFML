@@ -12,10 +12,10 @@ int main()
 	window.setFramerateLimit(60);
 
 	// Init globals
-	const int SPAWNLAPSE = 90;
+	int SPAWNLAPSE = 90;
 	const int SHOOTLAPSE = 20;
-	const float ENEMY_SPEED = 4.5f;
-	const int COLLIDE_DAMAGE = 2;
+	float ENEMY_SPEED = 4.5f;
+	const int COLLIDE_DAMAGE = 1;
 
 	// Init text
 	Font font;
@@ -33,11 +33,22 @@ int main()
 
 	// Player init
 	Player player(&playerTex, SHOOTLAPSE);
+	
+	Text hpText;
+	hpText.setFont(font);
+	hpText.setCharacterSize(12);
+	hpText.setFillColor(Color::White);
 
 	// Enemy init
 	int enemySpawnTimer = 0;
 	std::vector<Enemy> enemies;
 	enemies.push_back(Enemy(&enemyTex, window.getSize()));
+	
+	Text ehpText;
+	ehpText.setFont(font);
+	ehpText.setCharacterSize(12);
+	ehpText.setFillColor(Color::White);
+
 
 	while (window.isOpen())
 	{
@@ -48,7 +59,9 @@ int main()
 				window.close();
 		}
 		// Print Hp on the console(used for debugging)
-		std::cout << player.HP << std::endl;
+		//std::cout << player.HP << std::endl;
+		std::cout << SPAWNLAPSE << std::endl;
+		std::cout << ENEMY_SPEED << std::endl;
 		// Upadte 
 		
 		// Update player
@@ -63,6 +76,9 @@ int main()
 
 		if (Keyboard::isKeyPressed(Keyboard::D))
 			player.shape.move(10.f, 0.f);
+
+		hpText.setPosition(player.shape.getPosition().x, player.shape.getPosition().y - hpText.getGlobalBounds().height);
+		hpText.setString(std::to_string(player.HP) + "/" + std::to_string(player.HPMax));
 
 		// Player restrain in the window
 		if (player.shape.getPosition().x <= 0)                                                                                  // Left
@@ -107,7 +123,16 @@ int main()
 			{
 				if (player.bullets[i].shape.getGlobalBounds().intersects(enemies[k].shape.getGlobalBounds()))
 				{
-					enemies.erase(enemies.begin() + k);
+					enemies[k].HP--;
+					if (ENEMY_SPEED < 15.0f)
+						ENEMY_SPEED += 0.1f;
+					
+					if (SPAWNLAPSE >= 15)
+						SPAWNLAPSE -= 1;
+
+					if (enemies[k].HP <= 0)
+						enemies.erase(enemies.begin() + k);
+					
 					player.bullets.erase(player.bullets.begin() + i);
 					break;
 				}
@@ -135,6 +160,7 @@ int main()
 			if (enemies[i].shape.getPosition().x <= 0 - enemies[i].shape.getGlobalBounds().width)
 			{
 				enemies.erase(enemies.begin() + i);
+				break;
 			}
 
 			if (enemies[i].shape.getGlobalBounds().intersects(player.shape.getGlobalBounds()))
@@ -142,6 +168,11 @@ int main()
 				enemies.erase(enemies.begin() + i);
 				// Player take damage
 				player.HP -= COLLIDE_DAMAGE;
+				if (ENEMY_SPEED >= 10.5f)
+					ENEMY_SPEED -= 6.0f;
+				if (SPAWNLAPSE <= 85)
+					SPAWNLAPSE += 5;
+				break;
 			}
 		}
 
@@ -156,6 +187,7 @@ int main()
 
 		// Player
 		window.draw(player.shape);
+		window.draw(hpText);
 
 		// Render enemies
 		for (size_t i = 0; i < enemies.size(); i++)
