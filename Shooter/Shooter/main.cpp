@@ -13,11 +13,14 @@ int main()
 
 	// Init globals
 	int SPAWNLAPSE = 90;
-	const int SHOOTLAPSE = 20;
+	const int SHOOTLAPSE = 10;
 	float ENEMY_SPEED = 4.5f;
 	const int COLLIDE_DAMAGE = 1;
+	float PlayerSpeed = 10.f;
+	int playerScore = 0;
+	bool generateEnemy = true;
 
-	// Init text
+	// Init font
 	Font font;
 	font.loadFromFile("Fonts/Dosis-Light.ttf");
 
@@ -31,6 +34,23 @@ int main()
 	Texture bulletTex;
 	bulletTex.loadFromFile("Textures/missileTex01.png");
 
+	// Score UI init
+	Text score;
+	score.setFont(font);
+	score.setCharacterSize(20);
+	score.setFillColor(Color::White);
+	score.setPosition(10.f, 10.f);
+
+	// Game status UI
+	Text gameOverText;
+	gameOverText.setFont(font);
+	gameOverText.setCharacterSize(30);
+	gameOverText.setFillColor(Color::Red);
+	gameOverText.setString("GAME OVER");
+	gameOverText.setPosition(window.getSize().x / 2 - gameOverText.getGlobalBounds().width / 2, 
+							 window.getSize().y / 2 - gameOverText.getGlobalBounds().height / 2);
+	
+
 	// Player init
 	Player player(&playerTex, SHOOTLAPSE);
 	
@@ -43,10 +63,10 @@ int main()
 	int enemySpawnTimer = 0;
 	std::vector<Enemy> enemies;
 	enemies.push_back(Enemy(&enemyTex, window.getSize()));
-	
+	// Enemy text
 	Text ehpText;
 	ehpText.setFont(font);
-	ehpText.setCharacterSize(12);
+	ehpText.setCharacterSize(13);
 	ehpText.setFillColor(Color::White);
 
 
@@ -60,25 +80,26 @@ int main()
 		}
 		// Print Hp on the console(used for debugging)
 		//std::cout << player.HP << std::endl;
-		std::cout << SPAWNLAPSE << std::endl;
-		std::cout << ENEMY_SPEED << std::endl;
+		//std::cout << SPAWNLAPSE << std::endl;
+		//std::cout << ENEMY_SPEED << std::endl;
+		
 		// Upadte 
 		
 		// Update player
 		if (Keyboard::isKeyPressed(Keyboard::W))
-			player.shape.move(0.f, -10.f);
+			player.shape.move(0.f, -PlayerSpeed);
 
 		if (Keyboard::isKeyPressed(Keyboard::S))
-			player.shape.move(0.f, 10.f);
+			player.shape.move(0.f, PlayerSpeed);
 
 		if (Keyboard::isKeyPressed(Keyboard::A))
-			player.shape.move(-10.f, 0.f);
+			player.shape.move(-PlayerSpeed, 0.f);
 
 		if (Keyboard::isKeyPressed(Keyboard::D))
-			player.shape.move(10.f, 0.f);
+			player.shape.move(PlayerSpeed, 0.f);
 
-		hpText.setPosition(player.shape.getPosition().x, player.shape.getPosition().y - hpText.getGlobalBounds().height);
-		hpText.setString(std::to_string(player.HP) + "/" + std::to_string(player.HPMax));
+		hpText.setPosition(player.shape.getPosition().x, player.shape.getPosition().y - hpText.getGlobalBounds().height - 3); // Move up 3
+		hpText.setString("HP: " + std::to_string(player.HP) + "/" + std::to_string(player.HPMax));
 
 		// Player restrain in the window
 		if (player.shape.getPosition().x <= 0)                                                                                  // Left
@@ -124,6 +145,8 @@ int main()
 				if (player.bullets[i].shape.getGlobalBounds().intersects(enemies[k].shape.getGlobalBounds()))
 				{
 					enemies[k].HP--;
+					playerScore += 5;
+
 					if (ENEMY_SPEED < 15.0f)
 						ENEMY_SPEED += 0.1f;
 					
@@ -168,7 +191,7 @@ int main()
 				enemies.erase(enemies.begin() + i);
 				// Player take damage
 				player.HP -= COLLIDE_DAMAGE;
-				if (ENEMY_SPEED >= 10.5f)
+				if (ENEMY_SPEED >= 10.3f)
 					ENEMY_SPEED -= 6.0f;
 				if (SPAWNLAPSE <= 85)
 					SPAWNLAPSE += 5;
@@ -176,7 +199,10 @@ int main()
 			}
 		}
 
-		// Draw
+		// Update score
+		score.setString("SCORE: " + std::to_string(playerScore));
+
+		// ################Draw ##########################################################
 		window.clear();
 		
 		// Bullets
@@ -187,13 +213,30 @@ int main()
 
 		// Player
 		window.draw(player.shape);
-		window.draw(hpText);
 
 		// Render enemies
-		for (size_t i = 0; i < enemies.size(); i++)
+		if (generateEnemy)
 		{
-			window.draw(enemies[i].shape);
+			for (size_t i = 0; i < enemies.size(); i++)
+			{
+				ehpText.setPosition(enemies[i].shape.getPosition().x, enemies[i].shape.getPosition().y - hpText.getGlobalBounds().height);
+				ehpText.setString("HP: " + std::to_string(enemies[i].HP) + "/" + std::to_string(enemies[i].HPMax));
+				window.draw(ehpText);
+				window.draw(enemies[i].shape);
+			}
 		}
+
+		// Render UI
+		window.draw(hpText);
+		window.draw(score);
+		if (player.HP == 0)
+		{
+			window.draw(gameOverText);
+			ENEMY_SPEED = 0;
+			PlayerSpeed = 0;
+			generateEnemy = false;
+		}
+
 
 		window.display();
 	}
