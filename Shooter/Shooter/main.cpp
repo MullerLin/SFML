@@ -24,6 +24,13 @@ int main()
 	Font font;
 	font.loadFromFile("Fonts/Dosis-Light.ttf");
 
+	// Init audio
+	Music background;
+	background.openFromFile("Audio/Electrix_NES.ogg");
+	// Play BGM
+	background.play();
+	background.setLoop(true);
+
 	// Init textures
 	Texture playerTex;
 	playerTex.loadFromFile("Textures/ship.png");
@@ -82,6 +89,8 @@ int main()
 		//std::cout << player.HP << std::endl;
 		//std::cout << SPAWNLAPSE << std::endl;
 		//std::cout << ENEMY_SPEED << std::endl;
+		
+		
 		
 		// Upadte 
 		
@@ -238,6 +247,7 @@ int main()
 			ENEMY_SPEED = 0;
 			PlayerSpeed = 0;
 			gameIsOver = true;
+			background.setVolume(10);
 		}
 
 
