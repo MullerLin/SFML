@@ -29,6 +29,7 @@ int main()
 	background.openFromFile("Audio/Electrix_NES.ogg");
 	// Play BGM
 	background.play();
+	background.setVolume(100.f);
 	background.setLoop(true);
 
 	// Init textures
@@ -82,7 +83,7 @@ int main()
 		Event event;
 		while (window.pollEvent(event))
 		{
-			if (event.type == Event::Closed)
+			if (event.type == Event::Closed || (event.type == Event::KeyPressed && event.key.code == Keyboard::Escape))
 				window.close();
 		}
 		// Print Hp on the console(used for debugging)
@@ -154,7 +155,8 @@ int main()
 				if (player.bullets[i].shape.getGlobalBounds().intersects(enemies[k].shape.getGlobalBounds()))
 				{
 					enemies[k].HP--;
-					playerScore += 5;
+					if (!gameIsOver)
+						playerScore += 5;
 
 					if (ENEMY_SPEED < 15.0f)
 						ENEMY_SPEED += 0.1f;
@@ -247,7 +249,7 @@ int main()
 			ENEMY_SPEED = 0;
 			PlayerSpeed = 0;
 			gameIsOver = true;
-			background.setVolume(10);
+			background.setVolume(25.f);
 		}
 
 
