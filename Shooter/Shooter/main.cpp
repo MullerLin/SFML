@@ -19,6 +19,7 @@ int main()
 	float PlayerSpeed = 10.f;
 	int playerScore = 0;
 	bool gameIsOver = false;
+	Vector2f initPos(0.f, 45.f);
 
 	// Init font
 	Font font;
@@ -54,13 +55,13 @@ int main()
 	gameOverText.setFont(font);
 	gameOverText.setCharacterSize(30);
 	gameOverText.setFillColor(Color::Red);
-	gameOverText.setString("GAME OVER");
-	gameOverText.setPosition(window.getSize().x / 2 - gameOverText.getGlobalBounds().width / 2, 
+	gameOverText.setPosition(window.getSize().x / 2 - 100, 
 							 window.getSize().y / 2 - gameOverText.getGlobalBounds().height / 2);
 	
 
 	// Player init
 	Player player(&playerTex, SHOOTLAPSE);
+	player.shape.setPosition(initPos);
 	
 	Text hpText;
 	hpText.setFont(font);
@@ -84,14 +85,39 @@ int main()
 		while (window.pollEvent(event))
 		{
 			if (event.type == Event::Closed || (event.type == Event::KeyPressed && event.key.code == Keyboard::Escape))
+			{
 				window.close();
+				break;
+			}
+			if (event.type == Event::KeyPressed && (event.key.code == Keyboard::Space))
+			{
+				if (gameIsOver)
+				{
+					// Restart game
+					gameIsOver = false;
+
+					// Reset score
+					playerScore = 0;
+
+					// Reset player health
+					player.HP = player.HPMax;
+
+					// Reset game config
+					ENEMY_SPEED = 4.5f;
+					PlayerSpeed = 10.f;
+					background.setVolume(100.f);
+					SPAWNLAPSE = 90;
+
+					// Reset player position
+					player.shape.setPosition(initPos);
+
+				}
+			}
 		}
-		// Print Hp on the console(used for debugging)
-		//std::cout << player.HP << std::endl;
-		//std::cout << SPAWNLAPSE << std::endl;
-		//std::cout << ENEMY_SPEED << std::endl;
 		
 		
+
+
 		
 		// Upadte 
 		
@@ -183,7 +209,8 @@ int main()
 		// Spawn timer
 		if (enemySpawnTimer >= SPAWNLAPSE)
 		{
-			enemies.push_back(Enemy(&enemyTex, window.getSize()));
+			if (!gameIsOver)
+				enemies.push_back(Enemy(&enemyTex, window.getSize()));
 			enemySpawnTimer = 0;
 		}
 
@@ -245,6 +272,8 @@ int main()
 		window.draw(score);
 		if (player.HP == 0)
 		{
+			gameOverText.setString("GAME OVER\nSCORE: " + std::to_string(playerScore) + 
+				"\nPress space to restart or\nescape to exit");
 			window.draw(gameOverText);
 			ENEMY_SPEED = 0;
 			PlayerSpeed = 0;
