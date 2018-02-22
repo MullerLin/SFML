@@ -1,4 +1,4 @@
 ﻿  main.cpp
 d:\05development\sfml repo\sfml\shooter\shooter\main.cpp(8): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-d:\05development\sfml repo\sfml\shooter\shooter\main.cpp(58): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+d:\05development\sfml repo\sfml\shooter\shooter\main.cpp(64): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
   Shooter.vcxproj -> D:\05Development\SFML Repo\SFML\Shooter\Debug\Shooter.exe

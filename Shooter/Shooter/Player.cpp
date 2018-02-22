@@ -5,7 +5,7 @@
 Player::Player(Texture *texture, int _shootTimer)
 {
 	{
-		this->HPMax = 10;
+		this->HPMax = 1;
 		this->HP = this->HPMax;
 
 		this->shootTimer = _shootTimer;

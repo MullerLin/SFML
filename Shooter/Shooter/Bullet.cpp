@@ -1,7 +1,5 @@
 #include "Bullet.h"
 
-
-
 Bullet::Bullet(Texture *texture, Vector2f pos)
 {
 	this->shape.setTexture(*texture);
