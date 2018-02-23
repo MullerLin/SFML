@@ -30,7 +30,7 @@ int main()
 	background.openFromFile("Audio/Electrix_NES.ogg");
 	
 	SoundBuffer welcomeBuffer;
-	welcomeBuffer.loadFromFile("Audio/welcome.ogg");
+	welcomeBuffer.loadFromFile("Audio/captain.ogg");
 	Sound welcomeSound(welcomeBuffer);
 	welcomeSound.setVolume(100.f);
 
@@ -63,7 +63,7 @@ int main()
 	gameOverText.setFillColor(Color::Red);
 	gameOverText.setPosition(window.getSize().x / 2 - 200, 
 							 window.getSize().y / 2 - gameOverText.getGlobalBounds().height / 2);
-	gameOverText.setString("WELCOME TO SPACE SHOOTER!!\n          PRESS SPACE TO START\n\n          made by Charlie");
+	gameOverText.setString("WELCOME TO SPACE SHOOTER!!\n          PRESS SPACE TO START\n          PRESS K TO SHOOT\n\n          made by Charlie");
 	
 
 	// Player init
@@ -74,6 +74,7 @@ int main()
 	hpText.setFont(font);
 	hpText.setCharacterSize(12);
 	hpText.setFillColor(Color::White);
+	
 
 	// Enemy init
 	int enemySpawnTimer = 0;
@@ -125,8 +126,8 @@ int main()
 			}
 		}
 		
-		
-
+		/*std::cout << SPAWNLAPSE << std::endl;
+		std::cout << ENEMY_SPEED << std::endl;*/
 
 		
 		// Upadte 
@@ -233,6 +234,8 @@ int main()
 				if (enemies[i].shape.getPosition().x <= 0 - enemies[i].shape.getGlobalBounds().width)
 				{
 					enemies.erase(enemies.begin() + i);
+					if (playerScore >= 3)
+						playerScore -= 3;
 					break;
 				}
 
@@ -244,7 +247,7 @@ int main()
 					if (ENEMY_SPEED >= 10.3f)
 						ENEMY_SPEED -= 6.0f;
 					if (SPAWNLAPSE <= 85)
-						SPAWNLAPSE += 5;
+						SPAWNLAPSE += 15;
 					break;
 				}
 			}
@@ -269,8 +272,10 @@ int main()
 		window.draw(player.shape);
 		if (player.HP == 0)
 		{
-			gameOverText.setString("GAME OVER\nSCORE: " + std::to_string(playerScore) +
-				"\nPress space to restart or\nescape to exit");
+			hpText.setString("HP: " + std::to_string(player.HP) + "/" + std::to_string(player.HPMax));
+			window.draw(hpText);
+			gameOverText.setString("    GAME OVER!\n      SCORE: " + std::to_string(playerScore) +
+				"\nPress space to restart or ESC to exit");
 			gameIsOver = true;
 		}
 		// Render enemies
@@ -278,7 +283,7 @@ int main()
 		{
 			for (size_t i = 0; i < enemies.size(); i++)
 			{
-				ehpText.setPosition(enemies[i].shape.getPosition().x, enemies[i].shape.getPosition().y - hpText.getGlobalBounds().height);
+				ehpText.setPosition(enemies[i].shape.getPosition().x, enemies[i].shape.getPosition().y - ehpText.getGlobalBounds().height);
 				ehpText.setString("HP: " + std::to_string(enemies[i].HP) + "/" + std::to_string(enemies[i].HPMax));
 				window.draw(ehpText);
 				window.draw(enemies[i].shape);
