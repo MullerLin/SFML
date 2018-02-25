@@ -32,7 +32,7 @@ int main()
 	SoundBuffer welcomeBuffer;
 	welcomeBuffer.loadFromFile("Audio/captain.ogg");
 	Sound welcomeSound(welcomeBuffer);
-	welcomeSound.setVolume(100.f);
+	welcomeSound.setVolume(70.f);
 
 	// Play BGM
 	background.play();
@@ -44,7 +44,7 @@ int main()
 	playerTex.loadFromFile("Textures/ship.png");
 
 	Texture enemyTex;
-	enemyTex.loadFromFile("Textures/enemy.png");
+	enemyTex.loadFromFile("Textures/Raptor.png");
 
 	Texture bulletTex;
 	bulletTex.loadFromFile("Textures/missileTex01.png");
@@ -276,6 +276,8 @@ int main()
 			window.draw(hpText);
 			gameOverText.setString("    GAME OVER!\n      SCORE: " + std::to_string(playerScore) +
 				"\nPress space to restart or ESC to exit");
+			for (size_t k = 0; k < enemies.size(); k++)
+				enemies.erase(enemies.begin() + k);
 			gameIsOver = true;
 		}
 		// Render enemies
