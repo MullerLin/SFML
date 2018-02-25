@@ -8,7 +8,7 @@ Enemy::Enemy(Texture *texture, Vector2u windowSize)
 
 	this->shape.setTexture(*texture);
 
-	this->shape.setScale(1.f, 1.f);
+	this->shape.setScale(0.1f, 0.1f);
 	
 	this->range = windowSize.y - this->shape.getGlobalBounds().height;
 

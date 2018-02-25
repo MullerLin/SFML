@@ -34,6 +34,21 @@ int main()
 	Sound welcomeSound(welcomeBuffer);
 	welcomeSound.setVolume(70.f);
 
+	SoundBuffer shootBuffer;
+	shootBuffer.loadFromFile("Audio/shoot.ogg");
+	Sound shootSound(shootBuffer);
+	shootSound.setVolume(20.f);
+
+	SoundBuffer endBuffer;
+	endBuffer.loadFromFile("Audio/end.ogg");
+	Sound endSound(endBuffer);
+	endSound.setVolume(20.f);
+
+	SoundBuffer eshotBuffer;
+	eshotBuffer.loadFromFile("Audio/eshot.wav");
+	Sound eshotSound(eshotBuffer);
+	eshotSound.setVolume(20.f);
+
 	// Play BGM
 	background.play();
 	background.setVolume(10.f);
@@ -44,7 +59,7 @@ int main()
 	playerTex.loadFromFile("Textures/ship.png");
 
 	Texture enemyTex;
-	enemyTex.loadFromFile("Textures/Raptor.png");
+	enemyTex.loadFromFile("Textures/enemy.png");
 
 	Texture bulletTex;
 	bulletTex.loadFromFile("Textures/missileTex01.png");
@@ -173,6 +188,7 @@ int main()
 			{
 				Vector2f offset(10.f, 20.f);
 				player.bullets.push_back(Bullet(&bulletTex, player.shape.getPosition() + offset));
+				shootSound.play();
 				player.shootTimer = 0; // Reset timer
 			}
 
@@ -194,6 +210,7 @@ int main()
 					if (player.bullets[i].shape.getGlobalBounds().intersects(enemies[k].shape.getGlobalBounds()))
 					{
 						enemies[k].HP--;
+						eshotSound.play();
 						if (!gameIsOver)
 							playerScore += 5;
 
@@ -244,6 +261,7 @@ int main()
 					enemies.erase(enemies.begin() + i);
 					// Player take damage
 					player.HP -= COLLIDE_DAMAGE;
+					endSound.play();
 					if (ENEMY_SPEED >= 10.3f)
 						ENEMY_SPEED -= 6.0f;
 					if (SPAWNLAPSE <= 85)
@@ -280,6 +298,7 @@ int main()
 				enemies.erase(enemies.begin() + k);
 			gameIsOver = true;
 		}
+
 		// Render enemies
 		if (!gameIsOver)
 		{
